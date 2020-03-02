@@ -4,6 +4,8 @@ cd "$( dirname "${BASH_SOURCE[0]}" )"
 WPS_LOCAL_FLATPAK_DIR="$HOME/.local/share/flatpak/app/com.wps.Office/current/active/files"
 WPS_WIDE_FLATPAK_DIR="/var/lib/flatpak/app/com.wps.Office/current/active/files"
 WPS_SNAP_DIR="$HOME/snap/wps-office/current/.kingsoft/office6"
+WPS_OPT_DIR="/opt/kingsoft/wps-office"
+WPS_USR_DIR="/usr/lib/office6"
 
 echo "Cerco i percorsi di installazione..."
 
@@ -15,7 +17,7 @@ if [ -d "$WPS_LOCAL_FLATPAK_DIR" ]; then
 elif [ -d "$WPS_WIDE_FLATPAK_DIR" ]; then
 	echo "Rilevata installazione Flatpak globale, configuro i percorsi...";
 	if [[ $(id -u) -ne 0 ]] ; then
-  		echo "Per l'installazione globale bisogna lanciare lo scrip con i permessi di root."
+  		echo "Per l'installazione globale bisogna lanciare lo script con i permessi di root."
   		exit 1
 	fi
 	DICT_DIR="$WPS_WIDE_FLATPAK_DIR/extra/wps-office/office6/dicts/spellcheck"
@@ -26,6 +28,24 @@ elif [ -d "$WPS_SNAP_DIR" ]; then
 	DICT_DIR="$WPS_SNAP_DIR/dicts"
 	MUI_DIR="$WPS_SNAP_DIR/mui"
 	FONT_DIR="$HOME/.fonts"
+elif [ -d "$WPS_OPT_DIR" ]; then	
+	echo "Rilevata installazione in $WPS_OPT_DIR"
+	if [[ $(id -u) -ne 0 ]] ; then
+  		echo "Per l'installazione globale bisogna lanciare lo script con i permessi di root."
+  		exit 1
+	fi
+	DICT_DIR="$HOME/.kingsoft/office6/dicts"
+	MUI_DIR="$WPS_OPT_DIR/mui"
+	FONT_DIR="/usr/share/fonts"
+elif [ -d "$WPS_USR_DIR" ]; then	
+	echo "Rilevata installazione in $WPS_USR_DIR"
+	if [[ $(id -u) -ne 0 ]] ; then
+  		echo "Per l'installazione globale bisogna lanciare lo script con i permessi di root."
+  		exit 1
+	fi
+	DICT_DIR="$HOME/.kingsoft/office6/dicts"
+	MUI_DIR="$WPS_USR_DIR/mui"
+	FONT_DIR="/usr/share/fonts"	
 else
 	echo "Nessuna installazione trovata!"
 	exit 0
