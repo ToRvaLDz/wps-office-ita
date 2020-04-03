@@ -4,6 +4,7 @@ cd "$( dirname "${BASH_SOURCE[0]}" )"
 WPS_LOCAL_FLATPAK_DIR="$HOME/.local/share/flatpak/app/com.wps.Office/current/active/files"
 WPS_WIDE_FLATPAK_DIR="/var/lib/flatpak/app/com.wps.Office/current/active/files"
 WPS_SNAP_DIR="$HOME/snap/wps-office/current/.kingsoft/office6"
+WPS_SNAP_ALT_DIR="$HOME/snap/wps-office-multilang/current/.kingsoft/office6"
 WPS_OPT_DIR="/opt/kingsoft/wps-office"
 WPS_USR_DIR="/usr/lib/office6"
 
@@ -28,6 +29,11 @@ elif [ -d "$WPS_SNAP_DIR" ]; then
 	DICT_DIR="$WPS_SNAP_DIR/dicts"
 	MUI_DIR="$WPS_SNAP_DIR/mui"
 	FONT_DIR="$HOME/.fonts"
+elif [ -d "$WPS_SNAP_ALT_DIR" ]; then
+	echo "Rilevata installazione SNAP, configuro i percorsi..."
+	DICT_DIR="$WPS_SNAP_ALT_DIR/dicts"
+	MUI_DIR="$WPS_SNAP_ALT_DIR/mui"
+	FONT_DIR="$HOME/.fonts"
 elif [ -d "$WPS_OPT_DIR" ]; then	
 	echo "Rilevata installazione in $WPS_OPT_DIR"
 	if [[ $(id -u) -ne 0 ]] ; then
@@ -49,6 +55,11 @@ elif [ -d "$WPS_USR_DIR" ]; then
 else
 	echo "Nessuna installazione trovata!"
 	exit 0
+fi
+
+if [ -d "$FONT_DIR" ]; then
+	echo "Creo la directory fonts..."
+	mkdir -p $FONT_DIR
 fi
 
 echo "Creo le directory di installazione mancanti..."
@@ -75,9 +86,9 @@ echo "Copio i fonts..."
 cp wps-fonts $FONT_DIR -rf
 
 echo "Setto i permessi..."
-chmod 644 $FONT_DIR/wps-fonts -R
-chmod 655 $MUI_DIR/it_IT -R
-chmod 655 $DICT_DIR/it_IT -R
+chmod 755 $FONT_DIR/wps-fonts -R
+chmod 755 $MUI_DIR/it_IT -R
+chmod 755 $DICT_DIR/it_IT -R
 
 echo "Rigenero la cache dei fonts..."
 fc-cache -vfs
